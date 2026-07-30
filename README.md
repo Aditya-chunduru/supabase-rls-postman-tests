@@ -1,40 +1,19 @@
-# Supabase RLS & Automated Postman Testing Suite
+# Supabase RLS & Auth Automation Collection
 
-A lightweight API testing and back-end security verification suite designed to test Row-Level Security (RLS) policies and automate dynamic JWT authentication in Postman.
+A Postman collection designed to test Row-Level Security (RLS) policies and automatically manage JWT token lifecycles for Supabase projects.
 
-## Overview
+## Features
+* **Auto-Authentication:** Automatically requests a fresh JWT from Supabase using your credentials when your token is missing or expires.
+* **Environment & Global Flexibility:** Supports both Postman Environments and Global variables, allowing you to keep your workspace organized.
+* **RLS Validation:** Pre-configured test scripts to verify PostgREST behavior (handling `200`, `404`, and `401` responses) when unauthorized or unauthenticated.
 
-Because Postman collection exports exclude runtime credentials for security reasons, this repository contains the raw request collection configured with pre-request scripts to automatically handle Supabase authentication and validate data isolation at the database layer.
+## Quickstart Setup
 
-## Setup & Usage Instructions
-
-### 1. Import the Collection
-1. Download the `supabase-rls-testing.postman_collection.json` file directly from this repository.
-2. Open **Postman**.
-3. Click **Import** in the top left and drag or select the downloaded JSON file into your workspace.
-
-### 2. Configure Postman Globals
-Before running any requests, you must configure the following **Global Variables** in your Postman workspace so the automated pre-request script can successfully fetch your auth token:
-
-1. Click the gear/environment icon or go to **Globals** in your Postman workspace.
-2. Add the following keys and populate them with your project details:
-
-| Variable Key | Description | Example Value |
-
-| `supabase_url` | Your project's Supabase API URL | `https://xyzcompany.supabase.co` |
-
-| `supabase_anon_key` | Your public Supabase anonymous API key | `eyJhbGciOi...` |
-
-| `user_email` | Test account email address | `user@example.com` |
-
-| `user_password` | Test account password | `your_secure_password` |
-
-
-### 3. Run the Requests
-Once your global variables are set, send any request in the collection. The pre-request script will automatically authenticate against Supabase, inject the fresh JWT into your headers, and allow you to verify that your RLS policies correctly filter and isolate data.
-
-### Advanced: Inspecting or Modifying the Script
-If you need to view or adjust the auto-authentication logic:
-1. Click the **three dots (`...`)** next to your collection name in Postman and select **Edit**.
-2. Go to the **Pre-request Script** tab to view or modify the JavaScript handling the JWT token generation.
-
+1. **Import the Collection:** Download or clone this repository, then import the JSON file directly into Postman.
+2. **Configure Variables:** Set up the following variables either in your Postman Globals or inside a dedicated Postman Environment:
+   * `supabase_project_ref`: Your Supabase project reference ID.
+   * `supabase_anon_key`: Your Supabase public anonymous API key.
+   * `user_email`: The email address of a test user in your Supabase Auth dashboard.
+   * `user_password`: The password for that test user.
+3. **Database Prerequisite:** Ensure you have a target table created in your Supabase database matching your RLS configuration.
+4. **Run Requests:** Hit send on any request. The pre-request script will automatically authenticate in the background, cache your token, and execute your tests.
