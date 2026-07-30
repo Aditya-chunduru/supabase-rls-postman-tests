@@ -20,10 +20,15 @@ Before running any requests, you must configure the following **Global Variables
 2. Add the following keys and populate them with your project details:
 
 | Variable Key | Description | Example Value |
+
 | `supabase_url` | Your project's Supabase API URL | `https://xyzcompany.supabase.co` |
+
 | `supabase_anon_key` | Your public Supabase anonymous API key | `eyJhbGciOi...` |
+
 | `user_email` | Test account email address | `user@example.com` |
+
 | `user_password` | Test account password | `your_secure_password` |
+
 
 ### 3. Run the Requests
 Once your global variables are set, send any request in the collection. The pre-request script will automatically authenticate against Supabase, inject the fresh JWT into your headers, and allow you to verify that your RLS policies correctly filter and isolate data.
