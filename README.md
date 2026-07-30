@@ -32,3 +32,9 @@ Before running any requests, you must configure the following **Global Variables
 
 ### 3. Run the Requests
 Once your global variables are set, send any request in the collection. The pre-request script will automatically authenticate against Supabase, inject the fresh JWT into your headers, and allow you to verify that your RLS policies correctly filter and isolate data.
+
+### Advanced: Inspecting or Modifying the Script
+If you need to view or adjust the auto-authentication logic:
+1. Click the **three dots (`...`)** next to your collection name in Postman and select **Edit**.
+2. Go to the **Pre-request Script** tab to view or modify the JavaScript handling the JWT token generation.
+
