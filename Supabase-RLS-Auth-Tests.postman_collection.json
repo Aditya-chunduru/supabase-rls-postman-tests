@@ -1,7 +1,5 @@
 {
   "info": {
-    "_postman_id": "e08ebb44-43c8-4ffb-8e14-c7511d2f0691",
-    "name": "Supabase-RLS-Auth-Tests",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "56012449",
     "_collection_link": "https://go.postman.co/collection/56012449-e08ebb44-43c8-4ffb-8e14-c7511d2f0691?source=collection_link"
@@ -38,7 +36,7 @@
         "header": [
           {
             "key": "apikey",
-            "value": "{{supabase_anon_key}}",
+            "value": "Bearer {{user_jwt}}",
             "type": "text"
           },
           {
