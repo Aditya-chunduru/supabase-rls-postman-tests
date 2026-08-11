@@ -36,12 +36,12 @@
         "header": [
           {
             "key": "apikey",
-            "value": "Bearer {{user_jwt}}",
+            "value": "{{supabase_anon_key}}",
             "type": "text"
           },
           {
             "key": "Authorization",
-            "value": "{{vault:authorization}}",
+            "value": "Bearer {{user_jwt}}",
             "type": "text"
           },
           {
