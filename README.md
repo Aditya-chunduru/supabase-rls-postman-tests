@@ -15,5 +15,8 @@ A Postman collection designed to test Row-Level Security (RLS) policies and auto
    * `supabase_anon_key`: Your Supabase public anonymous API key.
    * `user_email`: The email address of a test user in your Supabase Auth dashboard.
    * `user_password`: The password for that test user.
+ ### Managed Variables (Handled Automatically):    
+   * `user_jwt` *(Auto-generated)*: Cached authentication token handled by the pre-request script.
+   * `token_expiry` *(Auto-generated)*: Timestamp tracking token expiration for automatic background refreshes.
 3. **Database Prerequisite:** Ensure you have a target table created in your Supabase database matching your RLS configuration.
 4. **Run Requests:** Hit send on any request. The pre-request script will automatically authenticate in the background, cache your token, and execute your tests.
