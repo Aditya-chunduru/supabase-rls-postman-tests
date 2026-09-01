@@ -2,9 +2,9 @@ name: Postman API Tests
 
 on:
   push:
-    branches: [ main]
+    branches: [ main ]
   pull_request:
-    branches: [ main]
+    branches: [ main ]
 
 jobs:
   test-api:
@@ -25,5 +25,8 @@ jobs:
       - name: Run Postman Collection
         run: |
           newman run "Postman/enterprise-inventory-api.postman_collection" \
-            --environment "Postman/Inventory.postman_environment.json" \
+            --env-var "supa_url=${{ secrets.SUPA_URL }}" \
+            --env-var "supa_anon_key=${{ secrets.SUPA_ANON_KEY }}" \
+            --env-var "user_email=${{ secrets.USER_EMAIL }}" \
+            --env-var "user_password=${{ secrets.USER_PASSWORD }}" \
             --reporters cli
