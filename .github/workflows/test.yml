@@ -25,7 +25,7 @@ jobs:
           
           postman login --with-api-key ${{ secrets.API }}
           postman collection run "$COLLECTION_FILE" \
-            --global-var "supabase_project_ref=nobdlugrggdqovoepuea" \
+            --global-var "supabase_url=https://nobdlugrggdqovoepuea.supabase.co" \
             --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
-            --global-var "user_email=${{ secrets.USER_EMAIL }}" \
-            --global-var "user_password=${{ secrets.USER_PASSWORD }}"
+            --global-var "users_emails=${{ secrets.USER_EMAIL }}" \
+            --global-var "user_passwords=${{ secrets.USER_PASSWORD }}"
