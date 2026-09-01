@@ -24,9 +24,9 @@ jobs:
           echo "Using collection: $COLLECTION_FILE"
           
           postman login --with-api-key ${{ secrets.API }}
-          postman collection run "Supabase-RLS-Auth-Tests.postman_collection.json" \
-          --global-var "supabase_url=https://nobdlugrggdqovoepuea.supabase.co" \
-          --global-var "supabase_project_ref=nobdlugrggdqovoepuea" \
-          --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
-          --global-var "users_emails=${{ secrets.USERS_EMAILS }}" \
-          --global-var "user_passwords=${{ secrets.USER_PASSWORDS }}"
+          postman collection run "$COLLECTION_FILE" \
+            --global-var "supabase_url=https://nobdlugrggdqovoepuea.supabase.co" \
+            --global-var "supabase_project_ref=nobdlugrggdqovoepuea" \
+            --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
+            --global-var "users_emails=${{ secrets.USERS_EMAILS }}" \
+            --global-var "user_passwords=${{ secrets.USER_PASSWORDS }}"
