@@ -24,7 +24,10 @@ jobs:
 
       - name: Run Postman Collection
         run: |
-          COLLECTION_FILE=$(find . -name "*.postman_collection" | head -n 1)
+          echo "Listing all files in workspace:"
+          find . -type f
+          
+          COLLECTION_FILE=$(find . -name "*.json" ! -name "*environment*" | head -n 1)
           echo "Found collection at: $COLLECTION_FILE"
           
           newman run "$COLLECTION_FILE" \
