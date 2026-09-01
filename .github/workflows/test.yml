@@ -1,0 +1,30 @@
+name: Postman CLI Collection Run
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  run-postman-collection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Postman CLI
+        run: |
+          curl -o- https://dl-cli.pstmn.io/install/linux64.sh | sh
+          echo "$HOME/.postman/bin" >> $GITHUB_PATH
+
+      - name: Run Collection via Postman CLI
+        run: |
+          COLLECTION_FILE=$(find . -name "*.json" ! -name "*environment*" | head -n 1)
+          echo "Using collection: $COLLECTION_FILE"
+          
+          postman login --with-api-key ${{ secrets.API }}
+          postman collection run "$COLLECTION_FILE" \
+            --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
+            --global-var "user_email=${{ secrets.USER_EMAIL }}" \
+            --global-var "user_password=${{ secrets.USER_PASSWORD }}"
