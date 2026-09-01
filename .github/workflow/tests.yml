@@ -1,14 +1,8 @@
-- name: Install Postman CLI
+- name: Run Collection via Postman CLI
         run: |
-          curl -o- https://dl-cli.pstmn.io/install/linux64.sh | sh
-
-      - name: Run Collection via Postman CLI
-        run: |
-          # Automatically find the collection json file
           COLLECTION_FILE=$(find . -name "*.json" ! -name "*environment*" | head -n 1)
           
-          # Login and run using Postman CLI (inherits desktop app execution rules)
-          postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+          postman login --with-api-key ${{ secrets.API }}
           postman collection run "$COLLECTION_FILE" \
             --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
             --global-var "user_email=${{ secrets.USER_EMAIL }}" \
