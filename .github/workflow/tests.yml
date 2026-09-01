@@ -1,45 +1,15 @@
-name: Supabase RLS & Auth Collection Tests
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test-supabase-auth:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Newman
-        run: npm install -g newman
-
-      - name: Locate Collection and Run Tests
-        env:
-          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
-          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+- name: Install Postman CLI
         run: |
-          echo "Scanning workspace for Postman collection..."
+          curl -o- https://dl-cli.pstmn.io/install/linux64.sh | sh
+
+      - name: Run Collection via Postman CLI
+        run: |
+          # Automatically find the collection json file
           COLLECTION_FILE=$(find . -name "*.json" ! -name "*environment*" | head -n 1)
-          echo "Found collection at: $COLLECTION_FILE"
-
-          # Construct the Supabase URL dynamically using the project reference
-          SUPA_URL="https://${SUPABASE_PROJECT_REF}.supabase.co"
-
-          newman run "$COLLECTION_FILE" \
-            --env-var "supabase_project_ref=$SUPABASE_PROJECT_REF" \
-            --env-var "supabase_anon_key=$SUPABASE_ANON_KEY" \
-            --env-var "user_email=$USER_EMAIL" \
-            --env-var "user_password=$USER_PASSWORD" \
-            --env-var "supa_url=$SUPA_URL" \
-            --reporters cli
+          
+          # Login and run using Postman CLI (inherits desktop app execution rules)
+          postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+          postman collection run "$COLLECTION_FILE" \
+            --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
+            --global-var "user_email=${{ secrets.USER_EMAIL }}" \
+            --global-var "user_password=${{ secrets.USER_PASSWORD }}"
