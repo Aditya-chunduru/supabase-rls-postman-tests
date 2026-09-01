@@ -1,9 +1,0 @@
-- name: Run Collection via Postman CLI
-        run: |
-          COLLECTION_FILE=$(find . -name "*.json" ! -name "*environment*" | head -n 1)
-          
-          postman login --with-api-key ${{ secrets.API }}
-          postman collection run "$COLLECTION_FILE" \
-            --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
-            --global-var "user_email=${{ secrets.USER_EMAIL }}" \
-            --global-var "user_password=${{ secrets.USER_PASSWORD }}"
