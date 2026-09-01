@@ -1,176 +1,104 @@
 {
-  "info": {
-    "_postman_id": "e08ebb44-43c8-4ffb-8e14-c7511d2f0691",
-    "name": "Supabase-RLS-Auth-Tests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "56012449",
-    "_collection_link": "https://go.postman.co/collection/56012449-e08ebb44-43c8-4ffb-8e14-c7511d2f0691?source=collection_link"
-  },
-  "item": [
-    {
-      "name": "Get Auth Token",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status is 200 and cache token\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "    var data = pm.response.json();\r",
-              "    pm.globals.set(\"user_jwt\", data.access_token);\r",
-              "    \r",
-              "    // Calculate expiration in standard Unix seconds\r",
-              "    const expiresIn = data.expires_in || 3600;\r",
-              "    const absoluteExpiry = Math.floor(Date.now() / 1000) + expiresIn;\r",
-              "    pm.globals.set(\"token_expiry\", absoluteExpiry);\r",
-              "});"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "apikey",
-            "value": "{{supabase_anon_key}}",
-            "type": "text"
-          },
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          },
-          {
-            "key": "Prefer",
-            "value": "return=representation",
-            "type": "text"
-          },
-          {
-            "key": "Authorization",
-            "value": "bearer {{user_jwt}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{supabase_url}}/rest/v1/games",
-          "host": [
-            "{{supabase_url}}"
-          ],
-          "path": [
-            "rest",
-            "v1",
-            "games"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "New Request",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "apikey",
-            "value": "{{supabase_anon_key}}",
-            "type": "text"
-          },
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          },
-          {
-            "key": "Prefer",
-            "value": "return=representation",
-            "type": "text"
-          },
-          {
-            "key": "Authorization",
-            "value": "bearer {{user_jwt}}",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": ""
-        },
-        "url": {
-          "raw": "{{supabase_url}}/rest/v1/games",
-          "host": [
-            "{{supabase_url}}"
-          ],
-          "path": [
-            "rest",
-            "v1",
-            "games"
-          ]
-        }
-      },
-      "response": []
-    }
-  ],
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{user_jwt}}",
-        "type": "string"
-      }
-    ]
-  },
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ]
+	"info": {
+		"_postman_id": "e08ebb44-43c8-4ffb-8e14-c7511d2f0691",
+		"name": "Supabase-RLS-Auth-Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "56012449"
+	},
+	"item": [
+		{
+			"name": "Get Auth Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200 and cache token\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var data = pm.response.json();",
+							"    pm.globals.set(\"user_jwt\", data.access_token);",
+							"    ",
+							"    const expiresIn = data.expires_in || 3600;",
+							"    const absoluteExpiry = Math.floor(Date.now() / 1000) + expiresIn;",
+							"    pm.globals.set(\"token_expiry\", absoluteExpiry);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{supabase_anon_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{users_emails}}\",\n    \"password\": \"{{user_passwords}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{supabase_url}}/auth/v1/token?grant_type=password",
+					"host": [
+						"{{supabase_url}}"
+					],
+					"path": [
+						"auth",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Games (RLS Protected)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{supabase_anon_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user_jwt}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{supabase_url}}/rest/v1/games",
+					"host": [
+						"{{supabase_url}}"
+					],
+					"path": [
+						"rest",
+						"v1",
+						"games"
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }
