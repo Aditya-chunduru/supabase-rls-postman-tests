@@ -28,5 +28,5 @@ jobs:
             --global-var "supabase_url=https://nobdlugrggdqovoepuea.supabase.co" \
             --global-var "supabase_project_ref=nobdlugrggdqovoepuea" \
             --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
-            --global-var "users_emails=${{ secrets.USER_EMAIL }}" \
-            --global-var "user_passwords=${{ secrets.USER_PASSWORD }}"
+            --global-var "users_emails=${{ secrets.USERS_EMAILS }}" \
+            --global-var "user_passwords=${{ secrets.USER_PASSWORDS }}"
