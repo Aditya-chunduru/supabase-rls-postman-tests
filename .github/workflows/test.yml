@@ -17,7 +17,7 @@ jobs:
         run: |
           curl -o- https://dl-cli.pstmn.io/install/linux64.sh | sh
           echo "$HOME/.postman/bin" >> $GITHUB_PATH
-
+          
       - name: Run Collection via Postman CLI
         run: |
           COLLECTION_FILE=$(find . -name "*.json" ! -name "*environment*" | head -n 1)
@@ -26,6 +26,7 @@ jobs:
           postman login --with-api-key ${{ secrets.API }}
           postman collection run "$COLLECTION_FILE" \
             --global-var "supabase_url=https://nobdlugrggdqovoepuea.supabase.co" \
+            --global-var "supabase_project_ref=nobdlugrggdqovoepuea" \
             --global-var "supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
             --global-var "users_emails=${{ secrets.USER_EMAIL }}" \
             --global-var "user_passwords=${{ secrets.USER_PASSWORD }}"
