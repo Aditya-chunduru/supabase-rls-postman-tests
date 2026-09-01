@@ -1,26 +1,40 @@
 {
   "info": {
+    "_postman_id": "e08ebb44-43c8-4ffb-8e14-c7511d2f0691",
+    "name": "Supabase-RLS-Auth-Tests",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "56012449",
     "_collection_link": "https://go.postman.co/collection/56012449-e08ebb44-43c8-4ffb-8e14-c7511d2f0691?source=collection_link"
   },
   "item": [
     {
-      "name": "Anon Requests",
+      "name": "Get Auth Token",
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Status code is 200 with empty array (or 404) when unauthenticated\", function () {\r",
-              "    // PostgREST returns 200 with [] or 404 when RLS blocks an update\r",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 404, 401]);\r",
+              "pm.test(\"Status is 200 and cache token\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "    var data = pm.response.json();\r",
+              "    pm.globals.set(\"user_jwt\", data.access_token);\r",
               "    \r",
-              "    if (pm.response.code === 200) {\r",
-              "        const jsonData = pm.response.json();\r",
-              "        pm.expect(jsonData).to.be.an('array').that.is.empty;\r",
-              "    }\r",
+              "    // Calculate expiration in standard Unix seconds\r",
+              "    const expiresIn = data.expires_in || 3600;\r",
+              "    const absoluteExpiry = Math.floor(Date.now() / 1000) + expiresIn;\r",
+              "    pm.globals.set(\"token_expiry\", absoluteExpiry);\r",
               "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
             ],
             "type": "text/javascript",
             "packages": {},
@@ -40,25 +54,24 @@
             "type": "text"
           },
           {
-            "key": "Authorization",
-            "value": "Bearer {{user_jwt}}",
-            "type": "text"
-          },
-          {
             "key": "Content-Type",
             "value": "application/json",
-            "type": "text",
-            "disabled": true
+            "type": "text"
           },
           {
             "key": "Prefer",
             "value": "return=representation",
             "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "bearer {{user_jwt}}",
+            "type": "text"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"email\": \"{{user_email}}\",\r\n    \"password\": \"{{user_password}}\"\r\n}",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -66,12 +79,56 @@
           }
         },
         "url": {
-          "raw": "https://{{supabase_project_ref}}.supabase.co/rest/v1/games",
-          "protocol": "https",
+          "raw": "{{supabase_url}}/rest/v1/games",
           "host": [
-            "{{supabase_project_ref}}",
-            "supabase",
-            "co"
+            "{{supabase_url}}"
+          ],
+          "path": [
+            "rest",
+            "v1",
+            "games"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{supabase_anon_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Prefer",
+            "value": "return=representation",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "bearer {{user_jwt}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{supabase_url}}/rest/v1/games",
+          "host": [
+            "{{supabase_url}}"
           ],
           "path": [
             "rest",
@@ -100,50 +157,7 @@
         "type": "text/javascript",
         "requests": {},
         "exec": [
-          "const currentTime = Math.floor(Date.now() / 1000);",
-          "const projectRef = pm.globals.get('supabase_project_ref') || pm.environment.get('supabase_project_ref');",
-          "const anonKey = pm.globals.get('supabase_anon_key') || pm.environment.get('supabase_anon_key');",
-          "const email = pm.globals.get('user_email') || pm.environment.get('user_email');",
-          "const password = pm.globals.get('user_password') || pm.environment.get('user_password');",
-          "const tokenExpiry = pm.globals.get('token_expiry') || pm.environment.get('token_expiry') || 0;",
-          "const userJwt = pm.globals.get('user_jwt') || pm.environment.get('user_jwt');",
-          "",
-          "if (!userJwt || (tokenExpiry - currentTime) < 300) {",
-          "    console.log(\"Token expired or missing. Auto-authenticating with Supabase...\");",
-          "",
-          "    pm.sendRequest({",
-          "        url: `https://${projectRef}.supabase.co/auth/v1/token?grant_type=password`,",
-          "        method: 'POST',",
-          "        header: {",
-          "            'Content-Type': 'application/json',",
-          "            'apikey': anonKey",
-          "        },",
-          "        body: {",
-          "            mode: 'raw',",
-          "            raw: JSON.stringify({",
-          "                email: email,",
-          "                password: password",
-          "            })",
-          "        }",
-          "    }, function (err, res) {",
-          "        if (!err && res.code === 200) {",
-          "            const data = res.json();",
-          "            ",
-          "            if (pm.environment.name) {",
-          "                pm.environment.set(\"user_jwt\", data.access_token);",
-          "                pm.environment.set(\"token_expiry\", currentTime + data.expires_in);",
-          "            } else {",
-          "                pm.globals.set(\"user_jwt\", data.access_token);",
-          "                pm.globals.set(\"token_expiry\", currentTime + data.expires_in);",
-          "            }",
-          "            ",
-          "            console.log(\"Auto-refresh successful!\");",
-          "        } else {",
-          "            const errMsg = err ? err.message : (res ? res.text() : \"Unknown error\");",
-          "            console.error(\"Auto-refresh failed:\", errMsg);",
-          "        }",
-          "    });",
-          "}"
+          ""
         ]
       }
     },
